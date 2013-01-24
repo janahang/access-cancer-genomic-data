@@ -45,51 +45,52 @@ if(length(no_gene) >= 1) {
 new_gene_list = c(no_list)
 
 calcualtions <- function(gene) {
-i=which(gene == colnames(mutation_data))
-mutation = (sum(complete.cases(mutation_data[,i]))/length(rownames(mutation_data)))*100
-mutation= round(mutation, digits = 0)
-print(paste(colnames(mutation_data)[i],"is mutated in",mutation,"% of all cases",sep=" "))
-cmd1 <- paste("echo","'\n'",colnames(mutation_data)[i],"is mutated in",mutation,"% of all cases", ">/dev/tty",sep=" ")
-system(cmd1)
-copy_number_altered = length(rownames(cna_data)) - (sum(cna_data[,i]=="0",na.rm = TRUE) + sum(!complete.cases(cna_data[,i])))
-cna = copy_number_altered/length(rownames(cna_data))*100
-cna= round(cna, digits = 0)
-print(paste(colnames(mutation_data)[i],"copy number altered",cna,"% of all cases",sep=" "))
-cmd2 <- paste("echo", colnames(cna_data)[i],"is copy number altered",cna,"% of all cases", ">/dev/tty",sep=" ")
-system(cmd2)
-any_alternation = data.frame(mutation = mutation_data[,i],cna = cna_data[,i])
-any_alternation[any_alternation == 0] <- NA
-total = any_alternation[apply(any_alternation, 1, function(y) !all(is.na(y))),]
-length_of_any_alternation = length(total[,1])
-percent_of_any_alternation = (length_of_any_alternation/length(rownames(mutation_data)))*100
-percent_of_any_alternation = round(percent_of_any_alternation, digits = 0)
-print(paste("Total % of cases where", colnames(mutation_data)[i],"is altered by either mutation or copy number alteration:",percent_of_any_alternation,"% of all cases.",sep=" "))
-cmd3 <- paste("echo", "Total % of cases where", colnames(mutation_data)[i],"is altered by either mutation or copy number alteration:",percent_of_any_alternation,"% of all cases.", ">/dev/tty",sep=" ")
-system(cmd3)
+  i=which(gene == colnames(mutation_data))
+  mutation = (sum(complete.cases(mutation_data[,i]))/length(rownames(mutation_data)))*100
+  mutation= round(mutation, digits = 0)
+  print(paste(colnames(mutation_data)[i],"is mutated in",mutation,"% of all cases",sep=" "))
+  cmd1 <- paste("echo","'\n'",colnames(mutation_data)[i],"is mutated in",mutation,"% of all cases", ">/dev/tty",sep=" ")
+  system(cmd1)
+  copy_number_altered = length(rownames(cna_data)) - (sum(cna_data[,i]=="0",na.rm = TRUE) + sum(!complete.cases(cna_data[,i])))
+  cna = copy_number_altered/length(rownames(cna_data))*100
+  cna= round(cna, digits = 0)
+  print(paste(colnames(mutation_data)[i],"copy number altered",cna,"% of all cases",sep=" "))
+  cmd2 <- paste("echo", colnames(cna_data)[i],"is copy number altered",cna,"% of all cases", ">/dev/tty",sep=" ")
+  system(cmd2)
+  any_alternation = data.frame(mutation = mutation_data[,i],cna = cna_data[,i])
+  any_alternation[any_alternation == 0] <- NA
+  total = any_alternation[apply(any_alternation, 1, function(y) !all(is.na(y))),]
+  length_of_any_alternation = length(total[,1])
+  percent_of_any_alternation = (length_of_any_alternation/length(rownames(mutation_data)))*100
+  percent_of_any_alternation = round(percent_of_any_alternation, digits = 0)
+  print(paste("Total % of cases where", colnames(mutation_data)[i],"is altered by either mutation or copy number alteration:",percent_of_any_alternation,"% of all cases.",sep=" "))
+  cmd3 <- paste("echo", "Total % of cases where", colnames(mutation_data)[i],"is altered by either mutation or copy number alteration:",percent_of_any_alternation,"% of all cases.", ">/dev/tty",sep=" ")
+  system(cmd3)
 }
-# sapply is more efficient than for loop
+
+# sapply is more efficient than 'for' loop
 sapply(new_gene_list,calcualtions) 
 
 # Complete gene set calculation
 if(length(new_gene_list) > 1){
-geneset_mut = mutation_data[,new_gene_list]
-#any_alternation[any_alternation == 0] <- NA
-total = geneset_mut[apply(geneset_mut, 1, function(y) !all(is.na(y))),]
-length_of_geneset_mut = length(total[,1])
-percent_of_geneset_mut = (length_of_geneset_mut/length(rownames(mutation_data)))*100
-percent_of_geneset_mut = round(percent_of_geneset_mut, digits = 0)
-print(paste("The gene set is mutated", percent_of_geneset_mut,"% of all cases.",sep=" "))
-cmd4 <- paste("echo","'\n'","The gene set is mutated", percent_of_geneset_mut,"% of all cases.", ">/dev/tty",sep=" ")
-system(cmd4)
-geneset_alt = cna_data[,new_gene_list]
-geneset_alt[geneset_alt == 0] <- NA
-total = geneset_alt[apply(geneset_alt, 1, function(y) !all(is.na(y))),]
-length_of_geneset_alt = length(total[,1])
-percent_of_geneset_alt = (length_of_geneset_alt/length(rownames(cna_data)))*100
-percent_of_geneset_alt = round(percent_of_geneset_alt, digits = 0)
-print(paste("The gene set is altered", percent_of_geneset_alt,"% of all cases.",sep=" "))
-cmd5 <- paste("echo","The gene set is altered", percent_of_geneset_alt,"% of all cases.", ">/dev/tty",sep=" ")
-system(cmd5)
+  geneset_mut = mutation_data[,new_gene_list]
+  #any_alternation[any_alternation == 0] <- NA
+  total = geneset_mut[apply(geneset_mut, 1, function(y) !all(is.na(y))),]
+  length_of_geneset_mut = length(total[,1])
+  percent_of_geneset_mut = (length_of_geneset_mut/length(rownames(mutation_data)))*100
+  percent_of_geneset_mut = round(percent_of_geneset_mut, digits = 0)
+  print(paste("The gene set is mutated", percent_of_geneset_mut,"% of all cases.",sep=" "))
+  cmd4 <- paste("echo","'\n'","The gene set is mutated", percent_of_geneset_mut,"% of all cases.", ">/dev/tty",sep=" ")
+  system(cmd4)
+  geneset_alt = cna_data[,new_gene_list]
+  geneset_alt[geneset_alt == 0] <- NA
+  total = geneset_alt[apply(geneset_alt, 1, function(y) !all(is.na(y))),]
+  length_of_geneset_alt = length(total[,1])
+  percent_of_geneset_alt = (length_of_geneset_alt/length(rownames(cna_data)))*100
+  percent_of_geneset_alt = round(percent_of_geneset_alt, digits = 0)
+  print(paste("The gene set is altered", percent_of_geneset_alt,"% of all cases.",sep=" "))
+  cmd5 <- paste("echo","The gene set is altered", percent_of_geneset_alt,"% of all cases.", ">/dev/tty",sep=" ")
+  system(cmd5)
 }
 
 
